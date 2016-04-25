@@ -121,9 +121,11 @@ struct timems {
   uint32_t raw_millis;
 };
 void now_ms(struct timems *tms);
-void setTime_ms(struct timems *tms);
+void setTime_ms(const struct timems *tms);
 void adjustTime_ms(int16_t ms); // +/- 32k ms
 int adjustClockSpeed(uint16_t StepSeconds, int8_t new_AddRemoveMS);
+int adjustClockSpeed_ppm(float clock_error);
+int32_t ts_interval(const struct timems *start, const struct timems *end);
 
 /* date strings */ 
 #define dt_MAX_STRING_LEN 9 // length of longest date string (excluding terminating null)

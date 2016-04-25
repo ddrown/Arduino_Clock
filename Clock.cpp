@@ -262,7 +262,7 @@ void now_ms(struct timems *tms) {
 }
 
 // jump to a specific time
-void setTime_ms(struct timems *tms) {
+void setTime_ms(const struct timems *tms) {
   prevMillis = millis() - tms->tv_msec;
   sysTime = tms->tv_sec;
   Status = timeSet;
@@ -278,6 +278,7 @@ void adjustTime_ms(int16_t ms) {
 }
 
 // new_AddRemoveMS: positive - local clock is fast, negative - local clock is slow
+// TODO: 500ppm is somehow buggy
 int adjustClockSpeed(uint16_t StepSeconds, int8_t new_AddRemoveMS) {
   if(Status != timeSet) {
     return -2; // time must be set
@@ -296,6 +297,26 @@ int adjustClockSpeed(uint16_t StepSeconds, int8_t new_AddRemoveMS) {
   NextClockAdjustS = sysTime + StepSeconds;
   AddRemoveMS = new_AddRemoveMS;
   return 0; // ok
+}
+
+int adjustClockSpeed_ppm(float clock_error) {
+  int8_t posOrNeg = -1;
+  uint16_t StepSeconds;
+
+  if(clock_error > 0) {
+    posOrNeg = -1;
+    StepSeconds = (0.001/clock_error)+0.5;
+  } else if(clock_error == 0) {
+    adjustClockSpeed(2, 0);
+  } else {
+    posOrNeg = 1;
+    StepSeconds = (-0.001/clock_error)+0.5;
+  }
+  adjustClockSpeed(StepSeconds, posOrNeg);
+}
+
+int32_t ts_interval(const struct timems *start, const struct timems *end) {
+  return (end->tv_sec - start->tv_sec) * 1000 + (end->tv_msec - start->tv_msec);
 }
 
 time_t now() {
