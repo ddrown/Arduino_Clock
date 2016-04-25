@@ -118,6 +118,7 @@ time_t now();              // return the current time as seconds since Jan 1 197
 struct timems {
   time_t tv_sec;
   uint16_t tv_msec;
+  uint32_t raw_millis;
 };
 void now_ms(struct timems *tms);
 void setTime_ms(struct timems *tms);

@@ -252,6 +252,7 @@ void now_ms(struct timems *tms) {
 
   tms->tv_sec = sysTime;
   tms->tv_msec = milliSecondsPassed % 1000; // prevMillis is always at the top of the second
+  tms->raw_millis = nowMillis;
 
   if(AddRemoveMS != 0 && sysTime >= NextClockAdjustS) {
     // adjust the local clock in case it is running fast or slow
