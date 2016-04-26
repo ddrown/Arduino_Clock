@@ -312,6 +312,9 @@ int adjustClockSpeed_ppm(float clock_error) {
     posOrNeg = 1;
     StepSeconds = (-0.001/clock_error)+0.5;
   }
+  if(StepSeconds > 1000) {
+    StepSeconds = 1000;
+  }
   adjustClockSpeed(StepSeconds, posOrNeg);
 }
 
