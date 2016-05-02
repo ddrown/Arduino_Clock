@@ -247,10 +247,14 @@ void now_ms(struct timems *tms) {
   nowMillis = millis();
   milliSecondsPassed = nowMillis - prevMillis;
   secondsPassed = milliSecondsPassed / 1000;
-  sysTime += secondsPassed;
-  prevMillis += secondsPassed * 1000;	
+  if(secondsPassed > 1) {
+    secondsPassed = secondsPassed - 1;
+    sysTime += secondsPassed;
+    prevMillis += secondsPassed * 1000;
+    secondsPassed = 1;
+  }
 
-  tms->tv_sec = sysTime;
+  tms->tv_sec = sysTime + secondsPassed;
   tms->tv_msec = milliSecondsPassed % 1000; // prevMillis is always at the top of the second
   tms->raw_millis = nowMillis;
 
@@ -278,12 +282,11 @@ void adjustTime_ms(int16_t ms) {
 }
 
 // new_AddRemoveMS: positive - local clock is fast, negative - local clock is slow
-// TODO: 500ppm is somehow buggy
 int adjustClockSpeed(uint16_t StepSeconds, int8_t new_AddRemoveMS) {
   if(Status != timeSet) {
     return -2; // time must be set
   }
-  if(AddRemoveMS != 0 && AddRemoveMS != -1 && AddRemoveMS != 1) {
+  if(new_AddRemoveMS != 0 && new_AddRemoveMS != -1 && new_AddRemoveMS != 1) {
     return -1; // invalid value
   }
   if(StepSeconds < 2) { // max +/- 500ppm
