@@ -310,7 +310,7 @@ int adjustClockSpeed_ppm(float clock_error) {
     posOrNeg = -1;
     StepSeconds = (0.001/clock_error)+0.5;
   } else if(clock_error == 0) {
-    adjustClockSpeed(2, 0);
+    return adjustClockSpeed(2, 0);
   } else {
     posOrNeg = 1;
     StepSeconds = (-0.001/clock_error)+0.5;
@@ -318,7 +318,7 @@ int adjustClockSpeed_ppm(float clock_error) {
   if(StepSeconds > 1000) {
     StepSeconds = 1000;
   }
-  adjustClockSpeed(StepSeconds, posOrNeg);
+  return adjustClockSpeed(StepSeconds, posOrNeg);
 }
 
 int32_t ts_interval(const struct timems *start, const struct timems *end) {
